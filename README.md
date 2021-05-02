@@ -1,6 +1,6 @@
-# Prject-Name
+# Schedule with Python
 
-![python](assets/rabbitmq-beginners-updated.png)
+![python](.assets/schedule.png)
 
 Hello friends of this [Mr.Rezoo](https://www.linkedin.com/in/reza-mobaraki/)
 
@@ -16,14 +16,21 @@ Hello friends of this [Mr.Rezoo](https://www.linkedin.com/in/reza-mobaraki/)
 
 ## General info
 
-Work on rabbitMQ with python language . . .
+In this repository I rewrite schedule (run job) project
+
+Python job scheduling for humans. Run Python functions (or any other callable)
+periodically using a friendly syntax.
+
+A simple to use API for scheduling jobs, made for humans. In-process scheduler
+for periodic jobs. No extra processes needed!
+Very lightweight and no external dependencies. Excellent test coverage. Tested
+on Python and 3.6, 3.7, 3.8, 3.9
 
 ## Technologies
 
 Project is created with:
 
 * Python: 3.9
-* pika: 1.2.0
 
 ## Help
 
@@ -50,11 +57,14 @@ source venv/bin/activate
 ```shell
  pip install -r requirements.txt
 ```
-* last step `follow the directories`
+
+* last step `follow the instructions`
 
 ## Credits
 
-* [mongard](https://www.mongard.ir/courses/rabbitmq/episode/352/rabbitmq-more/)
+* [schedule](https://github.com/dbader/schedule)
+
+* [mongard](https://www.mongard.ir/courses/python-schedule-project)
 
 ## Contributors
 
