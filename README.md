@@ -2,7 +2,7 @@
 
 ![python](.assets/schedule.png)
 
-Hello friends of this [Mr.Rezoo](https://www.linkedin.com/in/reza-mobaraki/)
+Hello this is [Mr.Rezoo](https://www.linkedin.com/in/reza-mobaraki/)
 
 ## Table of contents
 
