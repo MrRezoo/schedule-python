@@ -40,6 +40,10 @@ class Scheduler:
             return None
         return min(self.jobs).next_run
 
+    @property
+    def idle_seconds(self):
+        return (self.next_run - datetime.datetime.now()).total_seconds()
+
 
 class Job:
     def __init__(self, interval):
@@ -47,6 +51,7 @@ class Job:
         self.job_func = None
         self.last_run = None
         self.next_run = None
+        self.at_time = None
         self.unit = None
         self.period = None
 
@@ -75,15 +80,55 @@ class Job:
         self.unit = 'minutes'
         return self
 
+    @property
+    def hour(self):
+        if self.interval != 1:
+            raise IntervalError('use hours instead of hour')
+        return self.hours
+
+    @property
+    def hours(self):
+        self.unit = 'hours'
+        return self
+
+    @property
+    def day(self):
+        if self.interval != 1:
+            raise IntervalError('use days instead of day')
+        return self.days
+
+    @property
+    def days(self):
+        self.unit = 'days'
+        return self
+
     def do(self, jub_func, *args, **kwargs):
         self.job_func = partial(jub_func, *args, **kwargs)
         update_wrapper(self.job_func, jub_func)
         self._schedule_next_run()
         return self
 
+    def at(self, time_str):
+        if self.unit not in ('hours', 'days'):
+            raise ScheduleValueError(" Invalid Unit ")
+
+        hour, minute = [time for time in time_str.split(':')]
+        minute = int(minute)
+        if not 0 < minute < 59:
+            raise ScheduleValueError(" Invalid minute ")
+        if self.unit == 'days':
+            hour = int(hour)
+            if not 0 < hour < 59:
+                raise ScheduleValueError(" Invalid hour ")
+        elif self.unit == 'hours':
+            hour = 0
+
+        self.at_time = datetime.time(hour=hour, minute=minute)
+        return self
+
     def _schedule_next_run(self):
         # assert self.unit in ('seconds', 'minutes')
-        if self.unit not in ('seconds', 'minutes'):
+        if self.unit not in ('seconds', 'minutes', 'hours', 'days'):
             raise ScheduleValueError("Invalid Unit")
         self.period = datetime.timedelta(**{self.unit: self.interval})
         self.next_run = datetime.datetime.now() + self.period
@@ -116,3 +161,7 @@ def run_all(delay_second=0):
 
 def next_run():
     return default_scheduler.next_run
+
+
+def idle_seconds():
+    return default_scheduler.idle_seconds

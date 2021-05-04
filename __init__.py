@@ -18,5 +18,5 @@ if __name__ == '__main__':
 
     while True:
         main.run_pending()
-        print(main.next_run())
+        print(main.idle_seconds())
         time.sleep(1)
