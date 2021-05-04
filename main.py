@@ -1,4 +1,5 @@
 import datetime
+import time
 from functools import partial, update_wrapper
 
 
@@ -27,6 +28,17 @@ class Scheduler:
         all_jobs = (job for job in self.jobs if job.should_run)
         for job in sorted(all_jobs):
             job.run()
+
+    def run_all(self, delay_seconds):
+        for job in self.jobs:
+            job.run()
+            time.sleep(delay_seconds)
+
+    @property
+    def next_run(self):
+        if not self.jobs:
+            return None
+        return min(self.jobs).next_run
 
 
 class Job:
@@ -96,3 +108,11 @@ def every(interval=1):
 
 def run_pending():
     return default_scheduler.run_pending()
+
+
+def run_all(delay_second=0):
+    return default_scheduler.run_all(delay_second)
+
+
+def next_run():
+    return default_scheduler.next_run

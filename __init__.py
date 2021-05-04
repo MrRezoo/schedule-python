@@ -13,9 +13,10 @@ def greeting():
 
 if __name__ == '__main__':
 
-    main.every().second.do(show, name='rezoo')  # job1
+    main.every(6).seconds.do(show, name='rezoo')  # job1
     main.every(4).seconds.do(greeting)  # job2
 
     while True:
         main.run_pending()
+        print(main.next_run())
         time.sleep(1)
