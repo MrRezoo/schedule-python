@@ -110,28 +110,43 @@ class Job:
 
     def at(self, time_str):
         if self.unit not in ('hours', 'days'):
-            raise ScheduleValueError(" Invalid Unit ")
-
-        hour, minute = [time for time in time_str.split(':')]
+            raise ScheduleValueError('Invalid unit')
+        hour, minute = [t for t in time_str.split(':')]
         minute = int(minute)
         if not 0 < minute < 59:
-            raise ScheduleValueError(" Invalid minute ")
+            raise ScheduleValueError('Invalid minute')
         if self.unit == 'days':
             hour = int(hour)
-            if not 0 < hour < 59:
-                raise ScheduleValueError(" Invalid hour ")
+            if not 0 < hour < 23:
+                raise ScheduleValueError('Invalid hour')
         elif self.unit == 'hours':
             hour = 0
-
         self.at_time = datetime.time(hour=hour, minute=minute)
         return self
 
     def _schedule_next_run(self):
         # assert self.unit in ('seconds', 'minutes')
         if self.unit not in ('seconds', 'minutes', 'hours', 'days'):
-            raise ScheduleValueError("Invalid Unit")
+            raise ScheduleValueError('Invalid unit')
         self.period = datetime.timedelta(**{self.unit: self.interval})
         self.next_run = datetime.datetime.now() + self.period
+        if self.at_time is not None:
+            if self.unit not in ('hours', 'days'):
+                raise ScheduleValueError('Invalid unit')
+            kwargs = {
+                'minute': self.at_time.minute,
+                'second': 0,
+                'microsecond': 0,
+            }
+            if self.unit == 'days':
+                kwargs['hour'] = self.at_time.hour
+            self.next_run = self.next_run.replace(**kwargs)
+            if not self.last_run:
+                now = datetime.datetime.now()
+                if self.unit == 'days' and self.at_time > now.time():
+                    self.next_run = self.next_run - datetime.timedelta(days=1)
+                elif self.unit == 'hours' and self.at_time.minute > now.minute:
+                    self.next_run = self.next_run - datetime.timedelta(hours=1)
 
     def run(self):
         ret = self.job_func()
